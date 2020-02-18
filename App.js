@@ -30,11 +30,12 @@ import mario from './Images/mario-2.png';
 import KarachiBakery from './Images/KarachiBakery.jpg';
 import paradise from './Images/ParadiseBiryani.jpg';
 import BackImage from './Images/BackImage.jpg';
+import { Provider } from 'react-redux'
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import WebPage from './Components/WebPage'
 import ReasturantData from './Components/ReasturantData'
-
+import store from './Redux/Store'
 import {
   Header,
   LearnMoreLinks,
@@ -52,10 +53,8 @@ class App extends React.Component{
   }
   
   render(){
-    //const { navigate } = this.props.navigation;
   return (
-    
-          
+         <Provider store={store}>
           <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={FileWebPage} />
@@ -65,6 +64,8 @@ class App extends React.Component{
         
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
+    
     
             
           

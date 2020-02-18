@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import { connect } from 'react-redux'
 import {
   SafeAreaView,
   StyleSheet,
@@ -24,7 +25,9 @@ import {
 import {
   StackNavigator
 } from 'react-navigation';
+import {fetchUsers} from '../Redux/Actions'
 import 'react-native-gesture-handler';
+//import {fetchUsers} from '../Redux'
 import food from '../Images/food.png';
 import mario from '../Images/mario-2.png';
 import KarachiBakery from '../Images/KarachiBakery.jpg';
@@ -38,35 +41,40 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+
 class FileWebPage extends React.Component{
   constructor(props){
     super(props);
     this.state={url:null,
+      flag:false,
         restn:['KarachiBakery','ParadiseBiryani'],
         query: '',
     
     }
   }
+  componentDidMount(){ 
+  }
   
  
-  Imagefunction=(name)=>{
+   Imagefunction = (name) => {
     const { navigate } = this.props.navigation;
+    this.props.fetchUsers(name)
+    .then(
+      res=>{
+        this.fun1(res.websiteUrl)
+      }
+    )
     
-    let completeUrl="http://localhost:8080/food?foodName="+name
-   
-    fetch(completeUrl)
-    .then((response) => response.json())
-    .then((responseJson) => {
-      this.setState({url:responseJson.websiteUrl})
-      navigate('Website', {
-        id:123,
-        url:this.state.url,
-      });
+   }
+   fun1 = (MyUrl) => {  
+    this.props.navigation.navigate('Website', {
+      id:123,
+      url:MyUrl,
     })
-    .catch((error) => {
-      alert(error)
-    });
   }
+
+  
+
   textFunction=(name) => {
       this.setState({reasturant:name})
       
@@ -154,6 +162,7 @@ class FileWebPage extends React.Component{
            
             
             >
+           
             
           <Image source={paradise} style={styles.ImageSize} />
         <Text style={styles.ImageText}>
@@ -278,5 +287,22 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-
-export default FileWebPage;
+const mapStateToProps = state => {
+    return {
+      users: state.users,
+      
+    }
+    
+  }
+  
+  const mapDispatchToProps = (dispatch) => {
+    return {
+      fetchUsers: (name)=> dispatch(fetchUsers(name)),
+      
+    }
+  }
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FileWebPage)
